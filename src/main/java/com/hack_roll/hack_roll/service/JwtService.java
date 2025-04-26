@@ -6,7 +6,7 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.hack_roll.hack_roll.security.JwtConfig;
 
@@ -18,7 +18,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 
-@Service
+@Component
 public class JwtService {
   @Autowired
     private JwtConfig jwtConfig;  
