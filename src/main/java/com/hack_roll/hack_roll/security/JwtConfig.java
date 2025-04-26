@@ -1,16 +1,17 @@
 package com.hack_roll.hack_roll.security;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+import io.github.cdimascio.dotenv.Dotenv;
+
+@Configuration
 public class JwtConfig {
+private final Dotenv dotenv = Dotenv.load();
 
-    @Value("${JWT_SECRET}")
-    private String jwtSecret;
-
+    @Bean
     public String getJwtSecret() {
-        return jwtSecret;
+        return dotenv.get("JWT_SECRET");
     }
 
 }
