@@ -38,8 +38,7 @@ public class Event {
     public Event() {
     }
 
-    public Event(Long id, User createdBy, String title, String description, LocalDateTime date, int maxAttendees, String location, String category) {
-        this.id = id;
+    public Event(User createdBy, String title, String description, LocalDateTime date, int maxAttendees, String location, String category) {
         this.createdBy = createdBy;
         this.title = title;
         this.description = description;

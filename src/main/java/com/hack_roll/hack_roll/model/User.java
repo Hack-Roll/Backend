@@ -3,6 +3,8 @@ package com.hack_roll.hack_roll.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +21,7 @@ public class User {
     private Long id;
     @Column(unique = true)
     private String email;
+    @JsonIgnore
     private String password; 
     @OneToMany(mappedBy = "createdBy")
     private Set<Event> createdEvents = new HashSet<>();
