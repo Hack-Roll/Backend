@@ -1,6 +1,8 @@
 package com.hack_roll.hack_roll.model;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,8 +10,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name= "events")
@@ -33,6 +38,22 @@ public class Event {
     private String location;
     @Column(nullable = false)
     private String category;
+    @ManyToMany
+    @JoinTable(
+            name = "event_attendees",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"event_id", "user_id"})
+    )
+    private Set<User> attendees = new HashSet<>();
+
+    public Set<User> getAttendees() {
+        return this.attendees;
+    }
+
+    public void setAttendees(Set<User> attendees) {
+        this.attendees = attendees;
+    }
 
 
     public Event() {
