@@ -3,7 +3,7 @@ package com.hack_roll.hack_roll.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,11 +22,11 @@ public class User {
     private Long id;
     @Column(unique = true)
     private String email;
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password; 
     @OneToMany(mappedBy = "createdBy")
     private Set<Event> createdEvents = new HashSet<>();
-@ManyToMany(mappedBy = "attendees")
+    @ManyToMany(mappedBy = "attendees")
     private Set<Event> attendedEvents = new HashSet<>();
     
     public User() {

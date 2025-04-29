@@ -21,9 +21,8 @@ public class HackRollApplication {
 		System.setProperty("SPRING_DATASOURCE_PASSWORD", dotenv.get("SPRING_DATASOURCE_PASSWORD"));
 		System.setProperty("SPRING_DATASOURCE_DRIVER_CLASS_NAME", dotenv.get("SPRING_DATASOURCE_DRIVER_CLASS_NAME"));
 
-
-
 		SpringApplication.run(HackRollApplication.class, args);
+		System.out.println("Hack'n'Roll application started successfully.");
 	}
 
 	private static void checkEnvVariable(Dotenv dotenv, String key) {
