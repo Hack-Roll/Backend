@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name= "users")
@@ -21,7 +23,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", message = "Must have valid email address format")
     private String email;
+    @Pattern(regexp = "[a-zA-Z0-9_.-]+$", message = "Only letters, numbers and certain symbols (_, ., -)are allowed")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password; 
     @OneToMany(mappedBy = "createdBy")
