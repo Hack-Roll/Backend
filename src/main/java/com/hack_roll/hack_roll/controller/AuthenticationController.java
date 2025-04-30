@@ -12,17 +12,26 @@ import com.hack_roll.hack_roll.model.User;
 import com.hack_roll.hack_roll.payload.JwtResponse;
 import com.hack_roll.hack_roll.repository.UserRepository;
 import com.hack_roll.hack_roll.service.JwtService;
+import com.hack_roll.hack_roll.dto.UserDTO;
+
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationController {
     @Autowired
     AuthenticationManager authenticationManager;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    PasswordEncoder encoder;
+    // @Autowired
+    // UserRepository userRepository;
+    // @Autowired
+    // PasswordEncoder encoder;
     @Autowired
     JwtService jwtService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder encoder;
+
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> authenticateUser(@RequestBody User user) {
         Authentication authentication = authenticationManager.authenticate(
@@ -36,17 +45,28 @@ public class AuthenticationController {
         return ResponseEntity.ok(new JwtResponse("User has signed in correctly", token));
     }
 
+    // @PostMapping("/signup")
+    // public String registerUser(@Valid @RequestBody User user) {
+    //     if (userRepository.existsByEmail(user.getEmail())) {
+    //         return "Error: Email is already taken!";
+    //     }
+    //     // Create new user's account
+    //     User newUser = new User(
+    //             user.getEmail(),
+    //             encoder.encode(user.getPassword())
+    //     );
+    //     userRepository.save(newUser);
+    //     return "User registered successfully!";
+    // }
     @PostMapping("/signup")
-    public String registerUser(@RequestBody User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            return "Error: Email is already taken!";
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO) {
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            return ResponseEntity.badRequest().body("Error: Email is already taken!");
         }
-        // Create new user's account
-        User newUser = new User(
-                user.getEmail(),
-                encoder.encode(user.getPassword())
-        );
+
+        User newUser = new User(userDTO.getEmail(), encoder.encode(userDTO.getPassword()));
         userRepository.save(newUser);
-        return "User registered successfully!";
+
+        return ResponseEntity.ok("User registered successfully!");
     }
 }
