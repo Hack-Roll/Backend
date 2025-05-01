@@ -11,10 +11,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.hack_roll.hack_roll.dto.EventUpdateRequest;
 import com.hack_roll.hack_roll.model.Event;
 import com.hack_roll.hack_roll.model.User;
 import com.hack_roll.hack_roll.repository.UserRepository;
 import com.hack_roll.hack_roll.service.EventService;
+
 
 
 @RestController
@@ -104,4 +106,33 @@ public class EventController {
               return new ResponseEntity<Event>(HttpStatus.UNAUTHORIZED);
           }
       }
+
+    @PutMapping("/{eventId}")
+    public ResponseEntity<Event> updateEvent(@PathVariable Long eventId, @RequestBody EventUpdateRequest updates) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || ! authentication.isAuthenticated()) {
+            return new ResponseEntity<Event>(HttpStatus.UNAUTHORIZED);
+        }
+
+        // 2. Extract the username (or principal) from the authentication object
+        String email = authentication.getName();
+
+        // 3. Retrieve the User object from the database using the username
+        User user = userRepository.findByEmail(email);
+        Optional<Event> eventOptional = eventService.getEventById(eventId);
+        
+        if (! eventOptional.isPresent()) {
+            return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+        }
+
+        Event event = eventOptional.get();
+        if (user.getId() != event.getCreatedBy().getId()) {
+            return new ResponseEntity<Event>(HttpStatus.UNAUTHORIZED);
+        }
+        
+        Event updatedEvent = eventService.updateEvent(event, updates);
+        
+        return new ResponseEntity<Event>(updatedEvent, HttpStatus.OK);
+    }
 }
