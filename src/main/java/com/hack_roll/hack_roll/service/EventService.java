@@ -42,4 +42,8 @@ public class EventService {
 
         return eventRepository.findAll(filters, paging);
     }
+
+    public void deleteEvent(Event event) {
+        eventRepository.delete(event);
+    }
 }
