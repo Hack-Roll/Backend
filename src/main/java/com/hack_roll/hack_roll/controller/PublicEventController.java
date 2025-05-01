@@ -11,11 +11,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import com.hack_roll.hack_roll.dto.EventFilterRequest;
 import com.hack_roll.hack_roll.dto.EventSpecifications;
 import com.hack_roll.hack_roll.model.Event;
+import com.hack_roll.hack_roll.model.User;
 import com.hack_roll.hack_roll.service.EventService;
 
 
@@ -50,4 +53,15 @@ public class PublicEventController {
 
         return ResponseEntity.ok(events);
     }
+
+    @GetMapping("/{eventId}")
+    public ResponseEntity<Event> getSingleEvent(@PathVariable Long eventId) {
+        Optional<Event> eventOptional = eventService.getEventById(eventId);
+        if (eventOptional.isPresent()) {
+            Event event = eventOptional.get();
+            return new ResponseEntity<Event>(event, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+        }
+     }
 }
