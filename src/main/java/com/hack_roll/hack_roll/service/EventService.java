@@ -1,10 +1,17 @@
 package com.hack_roll.hack_roll.service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.hack_roll.hack_roll.dto.EventFilterRequest;
+import com.hack_roll.hack_roll.dto.EventSpecifications;
 import com.hack_roll.hack_roll.model.Event;
 import com.hack_roll.hack_roll.model.User;
 import com.hack_roll.hack_roll.repository.EventRepository;
@@ -20,12 +27,19 @@ public class EventService {
     public Event createEvent(Event event) {
         return eventRepository.save(event);
     }
+
     @Transactional
     public void addAttendee(Event event, User user) {
         event.getAttendees().add(user);
         eventRepository.save(event);
     }
+
     public Optional<Event> getEventById(Long id) {
         return eventRepository.findById(id);
+    }
+
+    public Page<Event> getAllEvents(Specification<Event> filters, Pageable paging) {
+
+        return eventRepository.findAll(filters, paging);
     }
 }

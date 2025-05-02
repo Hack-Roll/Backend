@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import com.hack_roll.hack_roll.model.AuthenticateUser;
 import com.hack_roll.hack_roll.model.User;
 import com.hack_roll.hack_roll.payload.JwtResponse;
 import com.hack_roll.hack_roll.repository.UserRepository;
@@ -30,7 +31,7 @@ public class AuthenticationController {
     private PasswordEncoder encoder;
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody User user) {
+    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody AuthenticateUser user) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getEmail(),
@@ -43,7 +44,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody AuthenticateUserDTO userDTO) {
         if (userRepository.existsByEmail(userDTO.getEmail())) {
             return ResponseEntity.badRequest().body("Error: Email is already taken!");
         }
