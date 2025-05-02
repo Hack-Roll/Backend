@@ -21,10 +21,7 @@ import jakarta.validation.Valid;
 public class AuthenticationController {
     @Autowired
     AuthenticationManager authenticationManager;
-    // @Autowired
-    // UserRepository userRepository;
-    // @Autowired
-    // PasswordEncoder encoder;
+
     @Autowired
     JwtService jwtService;
     @Autowired
@@ -45,26 +42,18 @@ public class AuthenticationController {
         return ResponseEntity.ok(new JwtResponse("User has signed in correctly", token));
     }
 
-    // @PostMapping("/signup")
-    // public String registerUser(@Valid @RequestBody User user) {
-    //     if (userRepository.existsByEmail(user.getEmail())) {
-    //         return "Error: Email is already taken!";
-    //     }
-    //     // Create new user's account
-    //     User newUser = new User(
-    //             user.getEmail(),
-    //             encoder.encode(user.getPassword())
-    //     );
-    //     userRepository.save(newUser);
-    //     return "User registered successfully!";
-    // }
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO) {
         if (userRepository.existsByEmail(userDTO.getEmail())) {
             return ResponseEntity.badRequest().body("Error: Email is already taken!");
         }
 
-        User newUser = new User(userDTO.getEmail(), encoder.encode(userDTO.getPassword()));
+        User newUser = new User(
+            userDTO.getFirstName(),
+            userDTO.getLastName(),
+            userDTO.getEmail(), 
+            encoder.encode(userDTO.getPassword())
+            );
         userRepository.save(newUser);
 
         return ResponseEntity.ok("User registered successfully!");

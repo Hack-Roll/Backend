@@ -19,16 +19,29 @@ import jakarta.validation.constraints.NotBlank;
 @Entity
 @Table(name= "users")
 public class User {
-   @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+        //Add name
+        @NotBlank(message = "A name is required")
+        private String firstName;
+    
+        //Add last name
+        @NotBlank(message = "A last name is required")
+        private String lastName;
+
     @Column(unique = true)
     @NotBlank(message = "An email address is required")
     @Email(message = "Must have valid email address format")
     private String email;
+
     @NotBlank(message = "A password is required")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
+    //Add photo
+
     @OneToMany(mappedBy = "createdBy")
     private Set<Event> createdEvents = new HashSet<>();
     @ManyToMany(mappedBy = "attendees")
@@ -37,9 +50,10 @@ public class User {
     public User() {
     }
 
-    public User(String email,String password) {
-      
-        this.password = password;
+    public User(String firstName, String lastName, String email,String encodedPassword) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = encodedPassword;
         this.email = email;
     }
 
@@ -65,5 +79,37 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFirstName() {
+        return this.firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Set<Event> getCreatedEvents() {
+        return this.createdEvents;
+    }
+
+    public void setCreatedEvents(Set<Event> createdEvents) {
+        this.createdEvents = createdEvents;
+    }
+
+    public Set<Event> getAttendedEvents() {
+        return this.attendedEvents;
+    }
+
+    public void setAttendedEvents(Set<Event> attendedEvents) {
+        this.attendedEvents = attendedEvents;
     }
 }
