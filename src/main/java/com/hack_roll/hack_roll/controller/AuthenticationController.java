@@ -13,7 +13,7 @@ import com.hack_roll.hack_roll.model.User;
 import com.hack_roll.hack_roll.payload.JwtResponse;
 import com.hack_roll.hack_roll.repository.UserRepository;
 import com.hack_roll.hack_roll.service.JwtService;
-import com.hack_roll.hack_roll.dto.UserDTO;
+import com.hack_roll.hack_roll.dto.AuthenticateUserDTO;
 
 import jakarta.validation.Valid;
 
@@ -44,19 +44,19 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody AuthenticateUserDTO userDTO) {
-        if (userRepository.existsByEmail(userDTO.getEmail())) {
-            return ResponseEntity.badRequest().body("Error: Email is already taken!");
-        }
-
-        User newUser = new User(
-            userDTO.getFirstName(),
-            userDTO.getLastName(),
-            userDTO.getEmail(), 
-            encoder.encode(userDTO.getPassword())
-            );
-        userRepository.save(newUser);
-
-        return ResponseEntity.ok("User registered successfully!");
+public ResponseEntity<?> registerUser(@Valid @RequestBody AuthenticateUserDTO userDTO) {
+    if (userRepository.existsByEmail(userDTO.getEmail())) {
+        return ResponseEntity.badRequest().body("Error: Email is already taken!");
     }
+
+    User newUser = new User(
+        userDTO.getFirstName(),
+        userDTO.getLastName(),
+        userDTO.getEmail(),
+        encoder.encode(userDTO.getPassword())
+    );
+
+    userRepository.save(newUser);
+    return ResponseEntity.ok("User registered successfully!");
+}
 }
