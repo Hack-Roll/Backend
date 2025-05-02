@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.hack_roll.hack_roll.model.Event;
 import com.hack_roll.hack_roll.model.User;
-import com.hack_roll.hack_roll.repository.EventRepository;
 import com.hack_roll.hack_roll.repository.UserRepository;
 import com.hack_roll.hack_roll.service.EventService;
 
