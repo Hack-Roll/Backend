@@ -1,6 +1,6 @@
 package com.hack_roll.hack_roll.controller;
 
-import java.util.List;
+//import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +11,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import com.hack_roll.hack_roll.dto.EventFilterRequest;
 import com.hack_roll.hack_roll.dto.EventSpecifications;
 import com.hack_roll.hack_roll.model.Event;
-import com.hack_roll.hack_roll.model.User;
+//import com.hack_roll.hack_roll.model.User;
 import com.hack_roll.hack_roll.service.EventService;
 
 
