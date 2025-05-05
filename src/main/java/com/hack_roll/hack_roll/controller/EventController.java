@@ -1,6 +1,8 @@
 package com.hack_roll.hack_roll.controller;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -102,6 +104,26 @@ public class EventController {
     }
 
     //
+    @GetMapping("/{eventId}/attendees")
+    public ResponseEntity<Set<User>> showAttendees(@PathVariable Long eventId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            Optional<Event> eventOptional = eventService.getEventById(eventId);
+
+            if (eventOptional.isPresent()) {
+                Event event = eventOptional.get();
+                return new ResponseEntity<Set<User>>(event.getAttendees(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+
+
     //
 
      @DeleteMapping("/{eventId}")
