@@ -15,6 +15,7 @@ import org.springframework.security.authentication.*;
 //import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import com.hack_roll.hack_roll.dto.EventBase;
 import com.hack_roll.hack_roll.dto.EventFilterRequest;
 import com.hack_roll.hack_roll.dto.EventSpecifications;
 import com.hack_roll.hack_roll.model.Event;
@@ -31,7 +32,7 @@ public class PublicEventController {
     EventService eventService;
    
     @GetMapping("")
-    public ResponseEntity<Page<Event>> getAllEvents(@ModelAttribute EventFilterRequest filterRequest) {
+    public ResponseEntity<Page<EventBase>> getAllEvents(@ModelAttribute EventFilterRequest filterRequest) {
         Specification<Event> filters = Specification.where(null);
 
         if (filterRequest.getTitle() != null && !filterRequest.getTitle().isEmpty()) {
@@ -51,17 +52,21 @@ public class PublicEventController {
 
         Page<Event> events = eventService.getAllEvents(filters, paging);
 
-        return ResponseEntity.ok(events);
+        Page<EventBase> eventBase = events.map(event -> new EventBase(event.getId(), event.getTitle(), event.getDescription(), event.getDate(), event.getLocation(), event.getCategory(), event.getMaxAttendees()));         
+        return ResponseEntity.ok(eventBase);
     }
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<Event> getSingleEvent(@PathVariable Long eventId) {
+    public ResponseEntity<EventBase> getSingleEvent(@PathVariable Long eventId) {
         Optional<Event> eventOptional = eventService.getEventById(eventId);
         if (eventOptional.isPresent()) {
             Event event = eventOptional.get();
-            return new ResponseEntity<Event>(event, HttpStatus.OK);
+
+            EventBase eventBase = new EventBase(event.getId(), event.getTitle(), event.getDescription(), event.getDate(), event.getLocation(), event.getCategory(), event.getMaxAttendees());         
+
+            return new ResponseEntity<EventBase>(eventBase, HttpStatus.OK);
         } else {
-            return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<EventBase>(HttpStatus.NOT_FOUND);
         }
      }
 }
