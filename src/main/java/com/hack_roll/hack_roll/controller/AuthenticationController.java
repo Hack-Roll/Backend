@@ -130,7 +130,6 @@ public ResponseEntity<?> updateUser(
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     }
 
-    // Update fields only if they are provided
     if (updateDTO.getFirstName() != null) {
         user.setFirstName(updateDTO.getFirstName());
     }
@@ -146,5 +145,42 @@ public ResponseEntity<?> updateUser(
     userRepository.save(user);
 
     return ResponseEntity.ok("User updated successfully");
+}
+
+
+@DeleteMapping("/users/{id}")
+public ResponseEntity<?> deleteUser(
+        @PathVariable Long id,
+        @RequestHeader("Authorization") String authHeader) {
+
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid authorisation header");
+    }
+
+    String token = authHeader.substring(7);
+
+    if (!jwtService.validateJwtToken(token)) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+    }
+
+    String emailFromToken = jwtService.getUsernameFromToken(token);
+    User requestingUser = userRepository.findByEmail(emailFromToken);
+    if (requestingUser == null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Authenticated user not found");
+    }
+
+    User userToDelete = userRepository.findById(id).orElse(null);
+    if (userToDelete == null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User to delete not found");
+    }
+
+    // Solo usuario mismo o admin puede borrar
+    if (!userToDelete.getEmail().equals(emailFromToken) && 
+        !emailFromToken.equals("admin@admin.com")) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User is not authorised to delete this user");
+    }
+
+    userRepository.delete(userToDelete);
+    return ResponseEntity.ok("User deleted successfully");
 }
 }
