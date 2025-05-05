@@ -1,6 +1,7 @@
 package com.hack_roll.hack_roll.controller;
 
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -71,17 +72,6 @@ public ResponseEntity<?> logoutUser(@RequestHeader(value = "Authorization", requ
     return ResponseEntity.ok("User has been signed out.");
 }
 
-// @GetMapping("/users/{id}")
-//     public ResponseEntity<User> getSingleUser(@PathVariable Long id) {
-//         Optional<User> userOptional = java.util.Optional.empty(); jwtService.getUserById(id);
-//         if (userOptional.isPresent()) {
-//             User user = userOptional.get();
-//             return new ResponseEntity<User>(user, HttpStatus.OK);
-//         } else {
-//             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-//         }
-//      }
-
 @GetMapping("/users/{id}")
 public ResponseEntity<User> getSingleUser(@PathVariable Long id) {
     Optional<User> userOptional = userRepository.findById(id);
@@ -91,4 +81,27 @@ public ResponseEntity<User> getSingleUser(@PathVariable Long id) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
+
+@GetMapping("/users")
+public ResponseEntity<?> getAllUsers(@RequestHeader("Authorization") String authHeader) {
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid authorization header");
+    }
+
+    String token = authHeader.substring(7);
+
+    if (!jwtService.validateJwtToken(token)) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+    }
+
+    String email = jwtService.getUsernameFromToken(token);
+
+    if (!"admin@admin.com".equalsIgnoreCase(email)) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied - user does not have the required permissions to access this information");
+    }
+
+    List<User> users = userRepository.findAll();
+    return ResponseEntity.ok(users);
+}
+
 }
