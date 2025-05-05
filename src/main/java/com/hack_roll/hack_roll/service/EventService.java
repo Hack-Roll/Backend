@@ -1,7 +1,7 @@
 package com.hack_roll.hack_roll.service;
 
-import java.util.Date;
-import java.util.List;
+//import java.util.Date;
+//import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.hack_roll.hack_roll.dto.EventFilterRequest;
-import com.hack_roll.hack_roll.dto.EventSpecifications;
+//import com.hack_roll.hack_roll.dto.EventFilterRequest;
+//import com.hack_roll.hack_roll.dto.EventSpecifications;
 import com.hack_roll.hack_roll.dto.EventUpdateRequest;
 import com.hack_roll.hack_roll.model.Event;
 import com.hack_roll.hack_roll.model.User;
