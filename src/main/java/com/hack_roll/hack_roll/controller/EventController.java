@@ -78,6 +78,32 @@ public class EventController {
          }
      }
 
+     // unattend event
+     //
+     @DeleteMapping("/{eventId}/unattend")
+    public ResponseEntity<Event> removeAttendee(@PathVariable Long eventId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            User user = userRepository.findByEmail(email);
+            Optional<Event> eventOptional = eventService.getEventById(eventId);
+
+            if (eventOptional.isPresent()) {
+                Event event = eventOptional.get();
+                eventService.removeAttendee(event, user);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    //
+    //
+
      @DeleteMapping("/{eventId}")
      public ResponseEntity<Event> deleteEvent(@PathVariable Long eventId) {
          Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
