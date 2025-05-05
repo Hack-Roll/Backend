@@ -1,6 +1,7 @@
 package com.hack_roll.hack_roll.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,21 +10,28 @@ import org.springframework.web.bind.annotation.*;
 
 import com.hack_roll.hack_roll.model.AuthenticateUser;
 import com.hack_roll.hack_roll.model.User;
+import com.hack_roll.hack_roll.payload.JwtResponse;
 import com.hack_roll.hack_roll.repository.UserRepository;
 import com.hack_roll.hack_roll.service.JwtService;
+import com.hack_roll.hack_roll.dto.AuthenticateUserDTO;
+
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationController {
     @Autowired
     AuthenticationManager authenticationManager;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    PasswordEncoder encoder;
+
     @Autowired
     JwtService jwtService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder encoder;
+
     @PostMapping("/signin")
-    public String authenticateUser(@RequestBody AuthenticateUser user) {
+    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody AuthenticateUser user) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getEmail(),
@@ -31,21 +39,24 @@ public class AuthenticationController {
                 )
         );
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return jwtService.generateToken(userDetails.getUsername());
+        String token = jwtService.generateToken(userDetails.getUsername());
+        return ResponseEntity.ok(new JwtResponse("User has signed in correctly", token));
     }
 
     @PostMapping("/signup")
-    public String registerUser(@RequestBody AuthenticateUser user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            return "Error: Email is already taken!";
-        }
-
-        // Create new user's account
-        User newUser = new User(
-                user.getEmail(),
-                encoder.encode(user.getPassword())
-        );
-        userRepository.save(newUser);
-        return "User registered successfully!";
+public ResponseEntity<?> registerUser(@Valid @RequestBody AuthenticateUserDTO userDTO) {
+    if (userRepository.existsByEmail(userDTO.getEmail())) {
+        return ResponseEntity.badRequest().body("Error: Email is already taken!");
     }
+
+    User newUser = new User(
+        userDTO.getFirstName(),
+        userDTO.getLastName(),
+        userDTO.getEmail(),
+        encoder.encode(userDTO.getPassword())
+    );
+
+    userRepository.save(newUser);
+    return ResponseEntity.ok("User registered successfully!");
+}
 }
