@@ -3,7 +3,6 @@ package com.hack_roll.hack_roll.controller;
 public class UpdateUserDTO {
     private String firstName;
     private String lastName;
-    private String email;
     private String password;
 
     // Getters and setters
@@ -21,14 +20,6 @@ public class UpdateUserDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPassword() {

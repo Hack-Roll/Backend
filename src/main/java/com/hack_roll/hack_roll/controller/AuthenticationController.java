@@ -104,4 +104,47 @@ public ResponseEntity<?> getAllUsers(@RequestHeader("Authorization") String auth
     return ResponseEntity.ok(users);
 }
 
+
+@PutMapping("/users")
+// para update un usuario, el mismo usuario tiene que estar logeado y añadir el token en el request de postman
+public ResponseEntity<?> updateUser(
+    @RequestBody UpdateUserDTO updateDTO,
+    @RequestHeader("Authorization") String authHeader) {
+
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body("Missing or invalid Authorization header");
+    }
+
+    String token = authHeader.substring(7);
+
+    if (!jwtService.validateJwtToken(token)) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body("Invalid or expired token");
+    }
+
+    String email = jwtService.getUsernameFromToken(token);
+    User user = userRepository.findByEmail(email);
+    
+    if (user == null) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    }
+
+    // Update fields only if they are provided
+    if (updateDTO.getFirstName() != null) {
+        user.setFirstName(updateDTO.getFirstName());
+    }
+
+    if (updateDTO.getLastName() != null) {
+        user.setLastName(updateDTO.getLastName());
+    }
+
+    if (updateDTO.getPassword() != null) {
+        user.setPassword(encoder.encode(updateDTO.getPassword()));
+    }
+
+    userRepository.save(user);
+
+    return ResponseEntity.ok("User updated successfully");
+}
 }
