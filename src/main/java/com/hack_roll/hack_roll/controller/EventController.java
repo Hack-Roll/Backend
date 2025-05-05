@@ -24,7 +24,6 @@ import com.hack_roll.hack_roll.service.EventService;
 
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/api/user/event")
 public class EventController {
     @Autowired
