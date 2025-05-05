@@ -37,6 +37,17 @@ public class EventService {
         eventRepository.save(event);
     }
 
+    //
+    //
+    @Transactional
+    public void removeAttendee(Event event, User user) {
+        event.getAttendees().remove(user);
+        eventRepository.save(event);
+    }
+
+    //
+    //
+    
     public Optional<Event> getEventById(Long id) {
         return eventRepository.findById(id);
     }
