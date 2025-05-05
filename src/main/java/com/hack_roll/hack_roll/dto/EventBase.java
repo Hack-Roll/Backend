@@ -9,13 +9,15 @@ public class EventBase {
     private LocalDateTime date;
     private String location;
     private String category;
+    private int maxAttendees;
 
-    public EventBase (Long id, String title, String description, LocalDateTime date, String location, String category) {
+    public EventBase (Long id, String title, String description, LocalDateTime date, String location, String category, Integer maxAttendees) {
 
         this.id = id;
         this.title = title;
         this.description = description;
         this.date = date;
+        this.maxAttendees = maxAttendees;
         this.location = location;
         this.category = category;
     }
@@ -39,6 +41,11 @@ public class EventBase {
     public String getLocation() {
         return this.location;
     }
+
+    public Integer getMaxAttendees() {
+        return this.maxAttendees;
+    }
+
 
     public String getCategory() {
         return this.category;

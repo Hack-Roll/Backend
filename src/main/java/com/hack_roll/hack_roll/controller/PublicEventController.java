@@ -52,18 +52,21 @@ public class PublicEventController {
 
         Page<Event> events = eventService.getAllEvents(filters, paging);
 
-        Page<EventBase> eventBase = events.map(event -> new EventBase(event.getId(), event.getTitle(), event.getDescription(), event.getDate(), event.getLocation(), event.getCategory()));         
+        Page<EventBase> eventBase = events.map(event -> new EventBase(event.getId(), event.getTitle(), event.getDescription(), event.getDate(), event.getLocation(), event.getCategory(), event.getMaxAttendees()));         
         return ResponseEntity.ok(eventBase);
     }
 
     @GetMapping("/{eventId}")
-    public ResponseEntity<Event> getSingleEvent(@PathVariable Long eventId) {
+    public ResponseEntity<EventBase> getSingleEvent(@PathVariable Long eventId) {
         Optional<Event> eventOptional = eventService.getEventById(eventId);
         if (eventOptional.isPresent()) {
             Event event = eventOptional.get();
-            return new ResponseEntity<Event>(event, HttpStatus.OK);
+
+            EventBase eventBase = new EventBase(event.getId(), event.getTitle(), event.getDescription(), event.getDate(), event.getLocation(), event.getCategory(), event.getMaxAttendees());         
+
+            return new ResponseEntity<EventBase>(eventBase, HttpStatus.OK);
         } else {
-            return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<EventBase>(HttpStatus.NOT_FOUND);
         }
      }
 }
