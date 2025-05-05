@@ -23,6 +23,7 @@ import com.hack_roll.hack_roll.service.EventService;
 
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/event")
 public class PublicEventController {
     @Autowired
