@@ -67,4 +67,7 @@ public class JwtService {
         }
         return false;
     }
+    public void getUserById(Long userId) {
+        throw new UnsupportedOperationException("Unimplemented method 'getUserById'");
+    }
 }

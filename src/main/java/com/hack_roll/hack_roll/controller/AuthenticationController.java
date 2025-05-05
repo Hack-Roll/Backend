@@ -1,5 +1,7 @@
 package com.hack_roll.hack_roll.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,5 +69,26 @@ public ResponseEntity<?> logoutUser(@RequestHeader(value = "Authorization", requ
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No token found to sign out");
     }
     return ResponseEntity.ok("User has been signed out.");
+}
+
+// @GetMapping("/users/{id}")
+//     public ResponseEntity<User> getSingleUser(@PathVariable Long id) {
+//         Optional<User> userOptional = java.util.Optional.empty(); jwtService.getUserById(id);
+//         if (userOptional.isPresent()) {
+//             User user = userOptional.get();
+//             return new ResponseEntity<User>(user, HttpStatus.OK);
+//         } else {
+//             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+//         }
+//      }
+
+@GetMapping("/users/{id}")
+public ResponseEntity<User> getSingleUser(@PathVariable Long id) {
+    Optional<User> userOptional = userRepository.findById(id);
+    if (userOptional.isPresent()) {
+        return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
+    } else {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }
 }
