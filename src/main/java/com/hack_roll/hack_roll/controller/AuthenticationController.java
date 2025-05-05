@@ -46,6 +46,7 @@ public ResponseEntity<JwtResponse> authenticateUser(@RequestBody AuthenticateUse
         return ResponseEntity.ok(new JwtResponse("User has signed in correctly", token));
     }
 
+
 @PostMapping("/signup")
 public ResponseEntity<?> registerUser(@Valid @RequestBody AuthenticateUserDTO userDTO) {
     if (userRepository.existsByEmail(userDTO.getEmail())) {
@@ -58,6 +59,7 @@ public ResponseEntity<?> registerUser(@Valid @RequestBody AuthenticateUserDTO us
         userDTO.getEmail(),
         encoder.encode(userDTO.getPassword())
     );
+    newUser.setPhoto(userDTO.getPhoto());
 
     userRepository.save(newUser);
     return ResponseEntity.ok("User registered successfully!");
@@ -71,6 +73,7 @@ public ResponseEntity<?> logoutUser(@RequestHeader(value = "Authorization", requ
     }
     return ResponseEntity.ok("User has been signed out.");
 }
+
 
 @GetMapping("/users/{id}")
 public ResponseEntity<User> getSingleUser(@PathVariable Long id) {

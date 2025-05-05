@@ -22,6 +22,8 @@ public class AuthenticateUserDTO {
     @Pattern(regexp = "^[a-zA-Z0-9_.-]+$", message = "Only letters, numbers and certain symbols (_, ., -) are allowed")
     private String password;
 
+    private String photo;
+       
     // ✅ Getters and setters
     public String getFirstName() {
         return firstName;
@@ -53,5 +55,13 @@ public class AuthenticateUserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+    
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 }
