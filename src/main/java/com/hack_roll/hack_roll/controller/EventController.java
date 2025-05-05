@@ -3,6 +3,7 @@ package com.hack_roll.hack_roll.controller;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.hack_roll.hack_roll.dto.Attendee;
 import com.hack_roll.hack_roll.dto.EventUpdateRequest;
 import com.hack_roll.hack_roll.model.Event;
 import com.hack_roll.hack_roll.model.User;
@@ -105,7 +107,7 @@ public class EventController {
 
     //
     @GetMapping("/{eventId}/attendees")
-    public ResponseEntity<Set<User>> showAttendees(@PathVariable Long eventId) {
+    public ResponseEntity<List<Attendee>> showAttendees(@PathVariable Long eventId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()) {
@@ -113,7 +115,11 @@ public class EventController {
 
             if (eventOptional.isPresent()) {
                 Event event = eventOptional.get();
-                return new ResponseEntity<Set<User>>(event.getAttendees(), HttpStatus.OK);
+
+                List<Attendee> attendees = event.getAttendees().stream()
+                .map(user -> new Attendee(user.getFirstName(), user.getLastName()))
+                .collect(Collectors.toList());
+                return new ResponseEntity<List<Attendee>>(attendees, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
