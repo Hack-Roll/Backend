@@ -1,6 +1,7 @@
 package com.hack_roll.hack_roll.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
@@ -22,7 +23,6 @@ import jakarta.validation.Valid;
 public class AuthenticationController {
     @Autowired
     AuthenticationManager authenticationManager;
-
     @Autowired
     JwtService jwtService;
     @Autowired
@@ -30,8 +30,8 @@ public class AuthenticationController {
     @Autowired
     private PasswordEncoder encoder;
 
-    @PostMapping("/signin")
-    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody AuthenticateUser user) {
+@PostMapping("/signin")
+public ResponseEntity<JwtResponse> authenticateUser(@RequestBody AuthenticateUser user) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getEmail(),
@@ -43,7 +43,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new JwtResponse("User has signed in correctly", token));
     }
 
-    @PostMapping("/signup")
+@PostMapping("/signup")
 public ResponseEntity<?> registerUser(@Valid @RequestBody AuthenticateUserDTO userDTO) {
     if (userRepository.existsByEmail(userDTO.getEmail())) {
         return ResponseEntity.badRequest().body("Error: Email is already taken!");
@@ -58,5 +58,14 @@ public ResponseEntity<?> registerUser(@Valid @RequestBody AuthenticateUserDTO us
 
     userRepository.save(newUser);
     return ResponseEntity.ok("User registered successfully!");
+}
+
+@PostMapping("/signout")
+//Este signout es simbólico: no afecta el token.
+public ResponseEntity<?> logoutUser(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No token found to sign out");
+    }
+    return ResponseEntity.ok("User has been signed out.");
 }
 }

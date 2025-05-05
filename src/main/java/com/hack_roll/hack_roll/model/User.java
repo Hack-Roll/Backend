@@ -21,7 +21,7 @@ import jakarta.validation.constraints.NotBlank;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
         //Add name
         @NotBlank(message = "A name is required")
@@ -57,11 +57,11 @@ public class User {
         this.email = email;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
