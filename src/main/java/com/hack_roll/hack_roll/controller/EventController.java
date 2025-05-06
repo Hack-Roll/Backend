@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import com.hack_roll.hack_roll.dto.Attendee;
+import com.hack_roll.hack_roll.dto.EventBase;
 import com.hack_roll.hack_roll.dto.EventUpdateRequest;
 import com.hack_roll.hack_roll.model.Event;
 import com.hack_roll.hack_roll.model.User;
@@ -34,7 +35,7 @@ public class EventController {
     EventService eventService;
    
     @PostMapping("")
-    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
+    public ResponseEntity<EventBase> createEvent(@RequestBody Event event) {
        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()) {
@@ -49,10 +50,11 @@ public class EventController {
 
             // 5. Save the event using the EventService
             Event savedEvent = eventService.createEvent(event);
+            EventBase eventBase = new EventBase(savedEvent.getId(), savedEvent.getTitle(), savedEvent.getDescription(), savedEvent.getDate(), savedEvent.getLocation(), savedEvent.getCategory(), savedEvent.getMaxAttendees());         
 
-            return new ResponseEntity<Event>(savedEvent, HttpStatus.CREATED);
+            return new ResponseEntity<EventBase>(eventBase, HttpStatus.CREATED);
          } else {
-            return new ResponseEntity<Event>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<EventBase>(HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -162,11 +164,11 @@ public class EventController {
       }
 
     @PutMapping("/{eventId}")
-    public ResponseEntity<Event> updateEvent(@PathVariable Long eventId, @RequestBody EventUpdateRequest updates) {
+    public ResponseEntity<EventBase> updateEvent(@PathVariable Long eventId, @RequestBody EventUpdateRequest updates) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || ! authentication.isAuthenticated()) {
-            return new ResponseEntity<Event>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<EventBase>(HttpStatus.UNAUTHORIZED);
         }
 
         // 2. Extract the username (or principal) from the authentication object
@@ -177,16 +179,16 @@ public class EventController {
         Optional<Event> eventOptional = eventService.getEventById(eventId);
         
         if (! eventOptional.isPresent()) {
-            return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<EventBase>(HttpStatus.NOT_FOUND);
         }
 
         Event event = eventOptional.get();
         if (user.getId() != event.getCreatedBy().getId()) {
-            return new ResponseEntity<Event>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<EventBase>(HttpStatus.UNAUTHORIZED);
         }
         
         Event updatedEvent = eventService.updateEvent(event, updates);
-        
-        return new ResponseEntity<Event>(updatedEvent, HttpStatus.OK);
+        EventBase eventBase = new EventBase(updatedEvent.getId(), updatedEvent.getTitle(), updatedEvent.getDescription(), updatedEvent.getDate(), updatedEvent.getLocation(), updatedEvent.getCategory(), updatedEvent.getMaxAttendees());   
+        return new ResponseEntity<EventBase>(eventBase, HttpStatus.OK);
     }
 }
