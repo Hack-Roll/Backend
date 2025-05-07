@@ -2,7 +2,7 @@ package com.hack_roll.hack_roll.controller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,16 +39,13 @@ public class EventController {
        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()) {
-            // 2. Extract the username (or principal) from the authentication object
+            
             String email = authentication.getName();
 
-            // 3. Retrieve the User object from the database using the username
             User createdBy = userRepository.findByEmail(email);
-
-            // 4. Set the createdBy user for the event
+           
             event.setCreatedBy(createdBy);
-
-            // 5. Save the event using the EventService
+         
             Event savedEvent = eventService.createEvent(event);
             EventBase eventBase = new EventBase(savedEvent.getId(), savedEvent.getTitle(), savedEvent.getDescription(), savedEvent.getDate(), savedEvent.getLocation(), savedEvent.getCategory(), savedEvent.getMaxAttendees());         
 
@@ -63,10 +60,9 @@ public class EventController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
  
          if (authentication != null && authentication.isAuthenticated()) {
-             // 2. Extract the username (or principal) from the authentication object
+             
              String email = authentication.getName();
- 
-             // 3. Retrieve the User object from the database using the username
+          
              User user = userRepository.findByEmail(email);
              Optional<Event> eventOptional = eventService.getEventById(eventId);
              
@@ -84,8 +80,6 @@ public class EventController {
          }
      }
 
-     // unattend event
-     //
      @DeleteMapping("/{eventId}/unattend")
     public ResponseEntity<Event> removeAttendee(@PathVariable Long eventId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -106,8 +100,7 @@ public class EventController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
-
-    //
+    
     @GetMapping("/{eventId}/attendees")
     public ResponseEntity<List<Attendee>> showAttendees(@PathVariable Long eventId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -129,20 +122,15 @@ public class EventController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
-
-
-
-    //
-
+    
      @DeleteMapping("/{eventId}")
      public ResponseEntity<Event> deleteEvent(@PathVariable Long eventId) {
          Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
   
           if (authentication != null && authentication.isAuthenticated()) {
-              // 2. Extract the username (or principal) from the authentication object
+             
               String email = authentication.getName();
-  
-              // 3. Retrieve the User object from the database using the username
+           
               User user = userRepository.findByEmail(email);
               Optional<Event> eventOptional = eventService.getEventById(eventId);
               
@@ -170,11 +158,9 @@ public class EventController {
         if (authentication == null || ! authentication.isAuthenticated()) {
             return new ResponseEntity<EventBase>(HttpStatus.UNAUTHORIZED);
         }
-
-        // 2. Extract the username (or principal) from the authentication object
+      
         String email = authentication.getName();
 
-        // 3. Retrieve the User object from the database using the username
         User user = userRepository.findByEmail(email);
         Optional<Event> eventOptional = eventService.getEventById(eventId);
         

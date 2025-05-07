@@ -37,8 +37,7 @@ public class User {
     @NotBlank(message = "A password is required")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-
-    //Add photo
+    
     @Column(name = "photo")
     private String photo;
 

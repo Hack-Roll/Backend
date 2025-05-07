@@ -61,7 +61,7 @@ class JwtServiceTest {
 
     @Test
     void validateJwtToken_expiredToken_returnsFalse() throws InterruptedException {
-        // Generate a token that is already expired
+      
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() - 1000);
         String expiredToken = Jwts.builder()
@@ -81,8 +81,7 @@ class JwtServiceTest {
 
     @Test
     void validateJwtToken_unsupportedToken_returnsFalse() {
-        // While it's difficult to create a truly "unsupported" token with standard libraries,
-        // we can simulate a scenario where the parser might encounter an unexpected format.
+        
         String unsupportedToken = "header.payload";
         assertFalse(jwtService.validateJwtToken(unsupportedToken));
     }

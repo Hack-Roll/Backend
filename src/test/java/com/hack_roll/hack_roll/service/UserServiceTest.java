@@ -25,17 +25,17 @@ public class UserServiceTest {
 
     @Test
     void getUserById_UserFound() {
-        // Arrange
+      
         Long userId = 1L;
         User user = new User();
         user.setId(userId);
         user.setEmail("test@example.com");
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        // Act
+      
         Optional<User> retrievedUser = userService.getUserById(userId);
 
-        // Assert
+        
         assertTrue(retrievedUser.isPresent());
         assertEquals(userId, retrievedUser.get().getId());
         assertEquals("test@example.com", retrievedUser.get().getEmail());
@@ -43,14 +43,14 @@ public class UserServiceTest {
 
     @Test
     void getUserById_UserNotFound() {
-        // Arrange
+       
         Long userId = 1L;
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // Act
+       
         Optional<User> retrievedUser = userService.getUserById(userId);
 
-        // Assert
+      
         assertTrue(retrievedUser.isEmpty());
     }
 }

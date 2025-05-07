@@ -24,12 +24,12 @@ public class JwtService {
     private JwtConfig jwtConfig;  
 
   private SecretKey key;
-   // Initializes the key after the class is instantiated and the jwtSecret is injected, // preventing the repeated creation of the key and enhancing performance
+   
     @PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(jwtConfig.getJwtSecret().getBytes(StandardCharsets.UTF_8));
     }
-    // Generate JWT token
+    
     public String generateToken(String email) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + 86400000); // 24 hours
@@ -41,7 +41,7 @@ public class JwtService {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
-    // Get username from JWT token
+    
     public String getUsernameFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key).build()
@@ -49,7 +49,7 @@ public class JwtService {
                 .getBody()
                 .getSubject();
     }
-    // Validate JWT token
+    
     public boolean validateJwtToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);

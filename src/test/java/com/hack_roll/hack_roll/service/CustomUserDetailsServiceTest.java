@@ -24,7 +24,7 @@ public class CustomUserDetailsServiceTest {
 
     @Test
     void loadUserByUsername_UserFound() {
-        // Arrange
+        
         String email = "test@example.com";
         User user = new User();
         user.setEmail(email);
@@ -32,10 +32,10 @@ public class CustomUserDetailsServiceTest {
 
         when(userRepository.findByEmail(email)).thenReturn(user);
 
-        // Act
+       
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
-        // Assert
+       
         assertNotNull(userDetails);
         assertEquals(email, userDetails.getUsername());
         assertEquals("password", userDetails.getPassword());
@@ -44,11 +44,11 @@ public class CustomUserDetailsServiceTest {
 
     @Test
     void loadUserByUsername_UserNotFound() {
-        // Arrange
+        
         String email = "nonexistent@example.com";
         when(userRepository.findByEmail(email)).thenReturn(null);
 
-        // Act and Assert
+      
         assertThrows(UsernameNotFoundException.class, () -> customUserDetailsService.loadUserByUsername(email));
     }
 }

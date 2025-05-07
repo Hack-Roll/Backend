@@ -66,7 +66,7 @@ public ResponseEntity<?> registerUser(@Valid @RequestBody AuthenticateUserDTO us
 }
 
 @PostMapping("/signout")
-//Este signout es simbólico: no afecta el token.
+
 public ResponseEntity<?> logoutUser(@RequestHeader(value = "Authorization", required = false) String authHeader) {
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No token found to sign out");
@@ -109,7 +109,6 @@ public ResponseEntity<?> getAllUsers(@RequestHeader("Authorization") String auth
 
 
 @PutMapping("/users")
-// para update un usuario, el mismo usuario tiene que estar logeado y añadir el token en el request de postman
 public ResponseEntity<?> updateUser(
     @RequestBody UpdateUserDTO updateDTO,
     @RequestHeader("Authorization") String authHeader) {
@@ -177,7 +176,7 @@ public ResponseEntity<?> deleteUser(
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User to delete not found");
     }
 
-    // Solo usuario mismo o admin puede borrar
+
     if (!userToDelete.getEmail().equals(emailFromToken) && 
         !emailFromToken.equals("admin@admin.com")) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User is not authorised to delete this user");

@@ -4,8 +4,7 @@ public class UpdateUserDTO {
     private String firstName;
     private String lastName;
     private String password;
-
-    // Getters and setters
+   
     public String getFirstName() {
         return this.firstName;
     }

@@ -23,8 +23,7 @@ public class AuthenticateUserDTO {
     private String password;
 
     private String photo;
-       
-    // ✅ Getters and setters
+    
     public String getFirstName() {
         return firstName;
     }
