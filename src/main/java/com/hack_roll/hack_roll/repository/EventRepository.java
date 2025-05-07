@@ -11,5 +11,5 @@ import com.hack_roll.hack_roll.model.User;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
-    List<Event> findByUser (User user);
+    List<Event> findByCreatedBy (User user);
 }

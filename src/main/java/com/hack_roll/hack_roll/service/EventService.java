@@ -98,6 +98,6 @@ public class EventService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found: "+email);
         }
-    return eventRepository.findByUser(user);
+    return eventRepository.findByCreatedBy(user);
 }
 }
