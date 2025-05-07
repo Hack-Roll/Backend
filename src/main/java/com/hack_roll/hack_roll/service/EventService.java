@@ -1,5 +1,7 @@
 package com.hack_roll.hack_roll.service;
 
+import java.util.List;
+
 //import java.util.Date;
 //import java.util.List;
 
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 //import com.hack_roll.hack_roll.dto.EventFilterRequest;
@@ -16,8 +19,10 @@ import org.springframework.stereotype.Service;
 
 import com.hack_roll.hack_roll.dto.EventUpdateRequest;
 import com.hack_roll.hack_roll.model.Event;
+import com.hack_roll.hack_roll.service.EventService;
 import com.hack_roll.hack_roll.model.User;
 import com.hack_roll.hack_roll.repository.EventRepository;
+import com.hack_roll.hack_roll.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -26,6 +31,8 @@ public class EventService {
 
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public Event createEvent(Event event) {
         return eventRepository.save(event);
@@ -85,4 +92,12 @@ public class EventService {
 
         return eventRepository.save(event);
     }
+
+    public List<Event> getEventsByUserEmail(String email) {
+    User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found: "+email);
+        }
+    return eventRepository.findByUser(user);
+}
 }

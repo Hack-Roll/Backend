@@ -8,14 +8,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.hack_roll.hack_roll.model.AuthenticateUser;
+import com.hack_roll.hack_roll.model.Event;
 import com.hack_roll.hack_roll.model.User;
 import com.hack_roll.hack_roll.payload.JwtResponse;
 import com.hack_roll.hack_roll.repository.UserRepository;
+import com.hack_roll.hack_roll.service.EventService;
 import com.hack_roll.hack_roll.service.JwtService;
 import com.hack_roll.hack_roll.dto.AuthenticateUserDTO;
 
@@ -32,6 +35,8 @@ public class AuthenticationController {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder encoder;
+    @Autowired
+    private EventService eventService;
 
 @PostMapping("/signin")
 public ResponseEntity<JwtResponse> authenticateUser(@RequestBody AuthenticateUser user) {
@@ -105,6 +110,14 @@ public ResponseEntity<?> getAllUsers(@RequestHeader("Authorization") String auth
 
     List<User> users = userRepository.findAll();
     return ResponseEntity.ok(users);
+}
+
+
+@GetMapping("/user/events")
+public ResponseEntity<List<Event>> getEventsByCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+    String userEmail = userDetails.getUsername();
+    List<Event> userEvents = eventService.getEventsByUserEmail(userEmail);
+    return ResponseEntity.ok(userEvents);
 }
 
 
