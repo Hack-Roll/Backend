@@ -1,5 +1,6 @@
 package com.hack_roll.hack_roll.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
